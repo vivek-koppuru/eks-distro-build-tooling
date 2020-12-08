@@ -40,7 +40,6 @@ images:
 		--local context=. \
 		--output type=image,oci-mediatypes=true,name=$(IMAGE),push=true
 
-# for local development only
 docker:
 	docker build \
 		-t $(IMAGE) \
