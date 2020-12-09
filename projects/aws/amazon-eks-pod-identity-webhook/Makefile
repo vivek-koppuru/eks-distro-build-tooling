@@ -34,6 +34,7 @@ local-images: clone
 	# Sleep to wait for buildkitd to start up
 	sleep 10
 	buildctl \
+		--debug \
 		build \
 		--frontend dockerfile.v0 \
 		--opt platform=linux/amd64 \
@@ -46,6 +47,7 @@ images: clone
 	# Sleep to wait for buildkitd to start up
 	sleep 10
 	buildctl \
+		--debug \
 		build \
 		--frontend dockerfile.v0 \
 		--opt platform=linux/amd64 \
