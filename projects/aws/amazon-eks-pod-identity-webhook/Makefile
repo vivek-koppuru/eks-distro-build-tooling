@@ -35,6 +35,7 @@ local-images: clone
 	sleep 10
 	buildctl \
 		build \
+		--debug \
 		--frontend dockerfile.v0 \
 		--opt platform=linux/amd64 \
 		--local dockerfile=./$(REPO) \
@@ -47,6 +48,7 @@ images: clone
 	sleep 10
 	buildctl \
 		build \
+		--debug \
 		--frontend dockerfile.v0 \
 		--opt platform=linux/amd64 \
 		--local dockerfile=./$(REPO) \
