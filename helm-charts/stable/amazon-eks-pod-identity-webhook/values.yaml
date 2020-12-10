@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # Copyright 2020 Amazon.com Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-CHART_BUCKET="prow-data-devstack-prowchartsbucket2e50b8d9-1vmxwewbr2zn7"
-REPO_URL="https://${CHART_BUCKET}.s3.amazonaws.com"
-
-CHART_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-STABLE="${CHART_ROOT}/stable"
-BUILD_DIR="${CHART_ROOT}/build"
-TOOLS_DIR="${BUILD_DIR}/tools"
-export PATH="${TOOLS_DIR}:${PATH}"
+image: 326475626674.dkr.ecr.us-west-2.amazonaws.com/eks-distro/amazon-eks-pod-identity-webhook:94d218e5363a4b21091a4bed2dcf4dc26bbb758d
+fargate: false
