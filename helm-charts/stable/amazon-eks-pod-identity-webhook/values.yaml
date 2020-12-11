@@ -14,3 +14,7 @@
 
 image: 326475626674.dkr.ecr.us-west-2.amazonaws.com/eks-distro/amazon-eks-pod-identity-webhook:94d218e5363a4b21091a4bed2dcf4dc26bbb758d
 fargate: false
+
+job:
+  serviceAccount:
+    create: false

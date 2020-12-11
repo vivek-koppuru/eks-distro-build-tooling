@@ -12,16 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: pod-identity-webhook
-  namespace: default
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: pod-identity-webhook
-subjects:
-- kind: ServiceAccount
-  name: pod-identity-webhook
-  namespace: default
+echo "hello world"
+echo "hello world"
+echo "hello world"
