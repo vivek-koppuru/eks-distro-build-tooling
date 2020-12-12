@@ -12,22 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: pod-identity-webhook
   namespace: default
+  name: pod-identity-webhook-job
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: hook-succeeded
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: pod-identity-webhook
   template:
-    metadata:
-      labels:
-        app: pod-identity-webhook
     spec:
-      serviceAccountName: pod-identity-webhook
+      serviceAccountName: pod-identity-webhook-job
       {{- if .Values.fargate }}
       initContainers:
       - name: sleep
@@ -38,22 +35,17 @@ spec:
         - "30"
       {{- end }}
       containers:
-      - name: pod-identity-webhook
-        image: {{ .Values.image }}
+      - name: job
+        image: public.ecr.aws/amazonlinux/amazonlinux:2
         imagePullPolicy: Always
         command:
-        - /webhook
-        - --in-cluster
-        - --namespace=default
-        - --service-name=pod-identity-webhook
-        - --tls-secret=pod-identity-webhook
-        - --annotation-prefix=eks.amazonaws.com
-        - --token-audience=sts.amazonaws.com
-        - --logtostderr
+        - bash
+        - config/job.sh
         volumeMounts:
-        - name: webhook-certs
-          mountPath: /var/run/app/certs
-          readOnly: false
+        - name: config
+          mountPath: /config
       volumes:
-      - name: webhook-certs
-        emptyDir: {}
+      - name: config
+        configMap:
+          name: amazon-eks-pod-identity-webhook-configmap
+      restartPolicy: OnFailure

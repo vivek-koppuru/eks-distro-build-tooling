@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: 326475626674.dkr.ecr.us-west-2.amazonaws.com/eks-distro/amazon-eks-pod-identity-webhook:94d218e5363a4b21091a4bed2dcf4dc26bbb758d
+# Make sure to pass in the image for the webhook here or as a parameter to the helm installation
+#image: amazon/amazon-eks-pod-identity-webhook:latest
 fargate: false
-
-job:
-  serviceAccount:
-    create: false

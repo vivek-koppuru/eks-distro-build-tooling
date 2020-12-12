@@ -20,5 +20,5 @@ data:
   {{- $files := .Files }}
   {{- range tuple "mutatingwebhook.yaml" "job.sh" }}
   {{ . }}: |-
-    {{ $files.Get (printf "config/%s" .) | quote }}
+{{ $files.Get (printf "config/%s" .) | indent 4 }}
   {{- end }}
