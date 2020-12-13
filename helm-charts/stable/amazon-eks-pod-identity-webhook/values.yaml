@@ -12,13 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: distro.eks.amazonaws.com/v1alpha1
-kind: ReleaseChannel
-metadata:
-  creationTimestamp: null
-  name: 1-18
-spec:
-  snsTopicARN: "arn:aws:sns:us-east-1:379412251201:eks-distro-updates"
-status:
-  active: true
-  latestRelease: 1
+nameOverride: "pod-identity-webhook"
+fullnameOverride: "pod-identity-webhook"
+
+# Make sure to pass in the image for the webhook here or as a parameter to the helm installation
+image: placeholder-webhook:fake
+
+baseImage: public.ecr.aws/amazonlinux/amazonlinux:2 
+
+# Adding a 30 second sleep to the deployment to allow for the webhook to be able to talk to kube-apiserver
+# as fargate pods take longer to bootstrap.
+fargate: false
+
+service:
+  port: 443
+
+replicaCount: 1
+
+jobName: "pod-identity-webhook-cert-approver"
