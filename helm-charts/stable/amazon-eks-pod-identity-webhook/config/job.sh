@@ -24,12 +24,15 @@ KUBECTL_VERSION=v1.18.9
 curl -sSL "https://distro.eks.amazonaws.com/kubernetes-1-18/releases/1/artifacts/kubernetes/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -o /bin/kubectl
 chmod +x /bin/kubectl
 
-secret_name=$(kubectl get sa default -o jsonpath='{.secrets[0].name}')
-CA_BUNDLE=$(kubectl get secret/$secret_name -o jsonpath='{.data.ca\.crt}' | tr -d '\n')
+CA_BUNDLE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt | base64 -w 0)
 cat /config/mutatingwebhook.yaml | sed -e "s|\${CA_BUNDLE}|${CA_BUNDLE}|g" > mutatingwebhook.yaml
 kubectl apply -f mutatingwebhook.yaml
 
-for c in $(kubectl get csr -o json | jq -r '.items[] | select(.spec.username=="system:serviceaccount:default:pod-identity-webhook" and .status=={}).metadata.name'); do
-    kubectl certificate approve $c;
+# Loop for a total of 50 seconds to give time for webhook to create CertificateSigningRequest
+for i in {1..10}; do
+    # Make sure to have the NAMESPACE and WEBHOOK_NAME env var defined
+    for c in $(kubectl get csr -o json | jq -r '.items[] | select(.spec.username=="system:serviceaccount:$NAMESPACE:$WEBHOOK_NAME" and .status=={}).metadata.name'); do
+        kubectl certificate approve $c
+    done
+    sleep 5
 done
-

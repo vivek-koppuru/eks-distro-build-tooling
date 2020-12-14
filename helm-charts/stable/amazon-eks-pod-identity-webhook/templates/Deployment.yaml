@@ -15,38 +15,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pod-identity-webhook
-  namespace: default
+  name: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
+  labels:
+    {{- include "amazon-eks-pod-identity-webhook.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: pod-identity-webhook
+      {{- include "amazon-eks-pod-identity-webhook.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: pod-identity-webhook
+        {{- include "amazon-eks-pod-identity-webhook.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: pod-identity-webhook
+      serviceAccountName: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
       {{- if .Values.fargate }}
       initContainers:
       - name: sleep
-        image: public.ecr.aws/amazonlinux/amazonlinux:2
+        image: {{ .Values.baseImage }}
         imagePullPolicy: Always
         command:
         - sleep
         - "30"
       {{- end }}
       containers:
-      - name: pod-identity-webhook
+      - name: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: Always
         command:
         - /webhook
         - --in-cluster
-        - --namespace=default
-        - --service-name=pod-identity-webhook
-        - --tls-secret=pod-identity-webhook
+        - --namespace={{ .Release.Namespace }}
+        - --service-name={{ include "amazon-eks-pod-identity-webhook.fullname" . }}
+        - --tls-secret={{ include "amazon-eks-pod-identity-webhook.fullname" . }}
         - --annotation-prefix=eks.amazonaws.com
         - --token-audience=sts.amazonaws.com
         - --logtostderr

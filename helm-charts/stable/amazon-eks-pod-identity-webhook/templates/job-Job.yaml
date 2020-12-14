@@ -15,20 +15,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  namespace: default
-  name: pod-identity-webhook-job
+  name: {{ .Values.jobName }}
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "0"
-    helm.sh/hook-delete-policy: hook-succeeded
 spec:
   template:
     spec:
-      serviceAccountName: pod-identity-webhook-job
+      serviceAccountName: {{ .Values.jobName }}
       {{- if .Values.fargate }}
       initContainers:
       - name: sleep
-        image: public.ecr.aws/amazonlinux/amazonlinux:2
+        image: {{ .Values.baseImage }}
         imagePullPolicy: Always
         command:
         - sleep
@@ -36,8 +34,15 @@ spec:
       {{- end }}
       containers:
       - name: job
-        image: public.ecr.aws/amazonlinux/amazonlinux:2
+        image: {{ .Values.baseImage }}
         imagePullPolicy: Always
+        env:
+        - name: WEBHOOK_NAME
+          value: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         command:
         - bash
         - config/job.sh
@@ -47,5 +52,5 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: amazon-eks-pod-identity-webhook-configmap
+          name: {{ .Values.jobName }}-configmap
       restartPolicy: OnFailure

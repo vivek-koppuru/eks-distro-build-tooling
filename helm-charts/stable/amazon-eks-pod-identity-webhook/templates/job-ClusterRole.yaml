@@ -15,16 +15,23 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: pod-identity-webhook-job
+  name: {{ .Values.jobName }}
 rules:
 - apiGroups:
   - admissionregistration.k8s.io
   resources:
   - mutatingwebhookconfigurations
   verbs:
-  - create
   - get
   - patch
+  resourceNames:
+  - {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - create
 - apiGroups:
   - certificates.k8s.io
   resources:

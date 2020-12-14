@@ -15,8 +15,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: pod-identity-webhook
-  namespace: default
+  name: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
 rules:
 - apiGroups:
   - ""
@@ -33,4 +32,4 @@ rules:
   - update
   - patch
   resourceNames:
-  - "pod-identity-webhook"
+  - {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
