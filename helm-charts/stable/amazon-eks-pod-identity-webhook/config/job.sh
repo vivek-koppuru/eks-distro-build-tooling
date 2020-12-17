@@ -25,7 +25,7 @@ curl -sSL "https://distro.eks.amazonaws.com/kubernetes-1-18/releases/1/artifacts
 chmod +x /bin/kubectl
 
 CA_BUNDLE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt | base64 -w 0)
-cat /config/mutatingwebhook.yaml | sed -e "s|\${CA_BUNDLE}|${CA_BUNDLE}|g" | sed -e "s|\${WEBHOOK_NAME}|${WEBHOOK_NAME}|g" | sed -e "s|\${NAMESPACE}|${NAMESPACE}|g" > mutatingwebhook.yaml
+cat /config/mutatingwebhook.yaml | sed -e "s|\${CA_BUNDLE}|${CA_BUNDLE}|g" | sed -e "s|\${WEBHOOK_NAME}|${WEBHOOK_NAME}|g" | sed -e "s|\${NAMESPACE}|${NAMESPACE}|g" | sed -e "s|\${MWC_NAME}|${MWC_NAME}|g" > mutatingwebhook.yaml
 kubectl apply -f mutatingwebhook.yaml
 
 # Loop for a total of 50 seconds to give time for webhook to create CertificateSigningRequest
