@@ -15,16 +15,16 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: pod-identity-webhook
-  namespace: default
+  name: ${MWC_NAME}
+  namespace: ${NAMESPACE}
 webhooks:
-- name: pod-identity-webhook.amazonaws.com
+- name: ${WEBHOOK_NAME}.amazonaws.com
   failurePolicy: Ignore
   sideEffects: None
   clientConfig:
     service:
-      name: pod-identity-webhook
-      namespace: default
+      name: ${WEBHOOK_NAME}
+      namespace: ${NAMESPACE}
       path: "/mutate"
     caBundle: ${CA_BUNDLE}
   rules:

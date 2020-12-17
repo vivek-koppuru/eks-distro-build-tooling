@@ -12,21 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-nameOverride: "pod-identity-webhook"
-fullnameOverride: "pod-identity-webhook"
+nameOverride: "eks-distro-pod-identity-webhook"
+fullnameOverride: "eks-distro-pod-identity-webhook"
+webhookConfigName: "0500-eks-distro-pod-identity-webhook"
+jobName: "eks-distro-pod-identity-webhook-cert-approver"
 
 # Make sure to pass in the image for the webhook here or as a parameter to the helm installation
 image: placeholder-webhook:fake
 
+# Used for sleep containers as well as to run our job script
 baseImage: public.ecr.aws/amazonlinux/amazonlinux:2 
 
-# Adding a 30 second sleep to the deployment to allow for the webhook to be able to talk to kube-apiserver
+# Adding the value for 'sleep' in seconds as a sleep to the deployment to allow for the webhook to be able to talk to kube-apiserver
 # as fargate pods take longer to bootstrap.
+sleep: 30
 fargate: false
+
+# Parameters to webhook are defined here: https://github.com/aws/amazon-eks-pod-identity-webhook#usage
+webhook:
+  tokenExpiration: 3600
+  stsRegionalEndpoint: true
+  port: 443
+  metricsPort: 9999
 
 service:
   port: 443
 
 replicaCount: 1
-
-jobName: "pod-identity-webhook-cert-approver"

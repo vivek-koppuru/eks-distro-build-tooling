@@ -17,8 +17,7 @@ kind: CronJob
 metadata:
   name: {{ .Values.jobName }}
 spec:
-  schedule: "*/1 * * * *"
-#  schedule: "@weekly"
+  schedule: "@weekly"
   jobTemplate:
     spec:
       template:
@@ -31,6 +30,8 @@ spec:
             env:
             - name: WEBHOOK_NAME
               value: {{ include "amazon-eks-pod-identity-webhook.fullname" . }}
+            - name: MWC_NAME
+              value: {{ .Values.webhookConfigName }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
