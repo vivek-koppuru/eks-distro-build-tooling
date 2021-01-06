@@ -14,6 +14,7 @@ ifeq ("$(GIT_COMMIT)","")
 	$(error No git commit was provided.)
 endif
 
+#hey
 DEVELOPMENT?=true
 AWS_ACCOUNT_ID?=$(shell aws sts get-caller-identity --query Account --output text)
 AWS_REGION?=us-west-2
