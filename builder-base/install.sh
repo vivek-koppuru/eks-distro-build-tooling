@@ -47,7 +47,7 @@ yum install -y \
     wget \
     which
 
-GOLANG_VERSION="${GOLANG_VERSION:-1.13.15}"
+GOLANG_VERSION="${GOLANG_VERSION:-1.15.6}"
 wget \
     --progress dot:giga \
     --max-redirect=1 \
@@ -82,3 +82,16 @@ rm -rf bash-$OVERRIDE_BASH_VERSION
 
 # directory setup
 mkdir -p /go/src /go/bin /go/pkg /go/src/github.com/aws/eks-distro
+
+# install additional versions of go
+export GOPATH=/go
+export PATH=$PATH:/go/bin
+GOLANG113_VERSION="${GOLANG113_VERSION:-1.13.15}"
+go get golang.org/dl/go${GOLANG113_VERSION}
+go${GOLANG113_VERSION} download
+GOLANG114_VERSION="${GOLANG114_VERSION:-1.14.13}"
+go get golang.org/dl/go${GOLANG114_VERSION}
+go${GOLANG114_VERSION} download
+GOLANG115_VERSION="${GOLANG115_VERSION:-1.15.6}"
+go get golang.org/dl/go${GOLANG115_VERSION}
+go${GOLANG115_VERSION} download
