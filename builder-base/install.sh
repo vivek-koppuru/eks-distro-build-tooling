@@ -85,6 +85,7 @@ mkdir -p /go/src /go/bin /go/pkg /go/src/github.com/aws/eks-distro
 
 # install additional versions of go
 export GOPATH=/go
+
 GOLANG113_VERSION="${GOLANG113_VERSION:-1.13.15}"
 go get golang.org/dl/go${GOLANG113_VERSION}
 cp ${GOPATH}/bin/go${GOLANG113_VERSION} /usr/bin/
